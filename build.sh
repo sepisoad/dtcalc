@@ -5,11 +5,9 @@ BIN=dtcalc
 CFLAG=
 PWD=$(pwd)
 OBJ_FILES=
-SRC_FILES="main.scm
-common_switches.scm 
-time_switches.scm
-date_switches.scm"
+SRC_FILES=
 
+SRC_FILES=$(ls *.scm)
 for FILE in $SRC_FILES
 do
     TEMP_FILE=$PWD"/$FILE"
