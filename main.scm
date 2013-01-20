@@ -3,11 +3,11 @@
 (declare (uses date_switches))  ; date specific switches
 (declare (uses time_switches)) 	; time specific switches
 
-(use srfi-37) 			; command line argument parser
+(use srfi-37) 			; command-line-arguments
 
 (define app_version "0.0.1")
 (define app_license "GPL3")
-(define app_copyright "sepehr aryani 2013")
+(define app_copyright "Sepehr Aryani - 2013")
 (define app_author_name "Sepehr Aryani")
 (define app_author_email "sepehr.aryani@gmail.com")
 (define app_author_twitter "@sepisoad")
@@ -28,7 +28,9 @@
  (lambda(item)
    (cond
     ((or (equal? item "--date")  (equal? item "-d"))
-     (date_switch_handler (cdr cmd_args)))
+     ((if (eq? (date_switch_handler (cdr cmd_args)) #t)
+	  (exit)
+	  (help_switch_handler)))) 
     ((or (equal? item "--time")  (equal? item "-t"))
      (time_switch_handler))
     ((or (equal? item "--help")  (equal? item "-h"))
