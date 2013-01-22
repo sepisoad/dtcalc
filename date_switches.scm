@@ -1,5 +1,7 @@
 (declare (unit date_switches))
 
+(require-extension srfi-19-date) ;;; scheme date library
+
 ;;; accepted date format:
 ;;; dd/mm/yyy => 14/5/1987
 ;;; dd.mm.yyy => 14.5.1987
@@ -20,9 +22,8 @@
 ;;; handle date input
 (define date_switch_handler
   (lambda (arguments)
-    (let 
-	((result #t)
-	 (num_of_args (length arguments)))
+    (let ((result #t)
+	  (num_of_args (length arguments)))
       (cond 
        ((= num_of_args 0) (print_today))       
        ((= num_of_args 1) (set! result #f))
@@ -86,7 +87,7 @@
 (define verify_date
   (lambda (day month year)
     (let ((result #t)
-	  (is_leap_year #f))
+	  (leap_year #f))
       (if (or (< year 1000)
 	      (> year 3005)
 	      (< month 1)
@@ -94,17 +95,16 @@
 	  (set! result #f))
       (if (eq? result #t)
 	  (begin
-	    (if (or (and (eq? (remainder year 4) 0)
-			 (not (eq? (remainder year 100) 0)))
-		    (eq? (remainder year 400) 0))
-		(set! is_leap_year #t)
-		(set! is_leap_year #f))
+	    (if (is_leap_year year)
+		(set! leap_year #t)
+		(set! leap_year #f))
 	    (cond
-	     ((eq? month 1) ;;; january
+	     ((= month 1) ;;; january
 	      (if (or (<= day 0) (> day 31))
 		  (set! result #f)))
 	     ((= month 2) ;;; february*
-	      (if (eq? is_leap_year #t) ;;; in leap years february is 29 days
+					;(display "fuck")
+	      (if (eq? leap_year #t) ;;; in leap years february is 29 days
 		  (if (or (<= day 0) (> day 29))
 		      (set! result #f))
 		  (if (or (<= day 0) (> day 28))
@@ -145,6 +145,15 @@
 	  #f))))
 
 ;;;
+(define is_leap_year
+  (lambda (year)
+    (if (or (and (eq? (remainder year 4) 0)
+		 (not (eq? (remainder year 100) 0)))
+	    (eq? (remainder year 400) 0))
+	#t
+	#f)))
+
+;;;
 (define parse_operator
   (lambda (op)
     (let ((result #t))
@@ -180,5 +189,23 @@
 ;;;
 (define print_today
   (lambda ()
-    (display "today is: 14/5/1987")
-    (newline)))
+    (let ((today (current-date)))
+	  (display "today is: ")
+	  (display (date-day today))
+	  (display "\\")
+	  (display (date-month today))
+	  (display "\\")
+	  (display (date-year today))
+	  (newline))))
+
+(define add_date
+  (lambda (source_date delta)
+    (let ((leap_year #f)
+	  (new_year 0)
+	  (new_month 0)
+	  (new_day 0))
+      (if (is_leap_year year)
+	  (set! leap_year #t)
+	  (set! leap_year #f)))
+    )) ;;; FIX ME
+      
