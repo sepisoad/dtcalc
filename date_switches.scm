@@ -33,7 +33,29 @@
 			      (if (eq? (parse_operator (car (cdr arguments))) #f)
 				  (set! result #f)
 				  (if (eq? (parse_operand (car (cdr (cdr arguments)))) #f)
-				      (set! result #f)))))
+				      (set! result #f)
+				      (begin
+					(calculate_date source_year
+							source_month
+							source_day
+							operator
+							operand_value)
+					(display source_day)
+					(display "\\")
+					(display source_month)
+					(display "\\")
+					(display source_year)
+					(display " ")
+					(display operator)
+					(display " ")
+					(display operand_value)
+					(display " => ")
+					(display target_day)
+					(display "\\")
+					(display target_month)
+					(display "\\")
+					(display target_year)
+					(newline))))))
        (else (set! result #f)))
       (if (eq? result #t)
 	  #t
@@ -198,14 +220,69 @@
 	  (display (date-year today))
 	  (newline))))
 
-(define add_date
-  (lambda (source_date delta)
+;;; returns the number of months
+(define days_in_month
+  (lambda (year month)
     (let ((leap_year #f)
-	  (new_year 0)
-	  (new_month 0)
-	  (new_day 0))
+	  (result 0))
       (if (is_leap_year year)
 	  (set! leap_year #t)
-	  (set! leap_year #f)))
-    )) ;;; FIX ME
-      
+	  (set! leap_year #f))
+      (cond
+       ((= month 1) 31)  ;;; january
+       ((= month 2) (if (eq? leap_year #t) 29 28)) ;;; february
+       ((= month 3) 31)  ;;; march
+       ((= month 4) 30)  ;;; april
+       ((= month 5) 31)  ;;; may
+       ((= month 6) 30)  ;;; june
+       ((= month 7) 31)  ;;; july
+       ((= month 8) 31)  ;;; august
+       ((= month 9) 30)  ;;; september
+       ((= month 10) 31) ;;; october
+       ((= month 11) 30) ;;; november
+       ((= month 12) 31) ;;; december
+       (else #f)))))
+  
+
+(define calculate_date
+  (lambda (year month day operation operand)
+
+;    (display day)
+;    (display ".")
+;    (display month)
+;    (display ".")
+;    (display year)
+;    (display " ")
+;    (display operation)
+;    (display " ")
+;    (display operand)
+;    (display "============================")
+;    (newline)
+    
+    (let ((month_len 1))
+      (if (eq? operand 0)
+	  (begin
+	    (set! target_year year)
+	    (set! target_month month)
+	    (set! target_day day))
+	  (begin
+	    (set! month_len (days_in_month year month))
+	    (if (<= operand (- month_len day))
+		(begin
+		  (set! day (+ day operand))
+		  (calculate_date year month day operation 0))
+		(begin
+		  (set! operand (- operand (- month_len day)))
+		  (if (or (equal? operation "add")
+			  (equal? operation "+"))
+		      (begin
+			(set! operand (- operand 1))
+			(set! day 1)
+			(if (eq? month 12)
+			    (begin
+			      (set! month 1)
+			      (set! year (+ year 1)))
+			    (set! month (+ month 1))))
+	        ;;; else => "sub" FIX ME
+		      )
+		  (calculate_date year month day operation operand))))))))
