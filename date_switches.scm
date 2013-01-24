@@ -246,19 +246,6 @@
 
 (define calculate_date
   (lambda (year month day operation operand)
-
-;    (display day)
-;    (display ".")
-;    (display month)
-;    (display ".")
-;    (display year)
-;    (display " ")
-;    (display operation)
-;    (display " ")
-;    (display operand)
-;    (display "============================")
-;    (newline)
-    
     (let ((month_len 1))
       (if (eq? operand 0)
 	  (begin
