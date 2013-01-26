@@ -285,11 +285,12 @@
 		      (calculate_date year month day operation 0))
 		    (begin
 		      (set! operand (- operand day))
-		      (set! operand (- operand 1))
-		      (set! day 1)
+		      ;(set! operand (- operand 1))
+		      ;(set! day ())
 		      (if (eq? month 1)
 			  (begin
 			    (set! month 12)
 			    (set! year (- year 1)))
 			  (set! month (- month 1)))
+		      (set! day (days_in_month year month))
 		      (calculate_date year month day operation operand)))))))))))
