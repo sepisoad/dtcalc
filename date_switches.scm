@@ -5,7 +5,6 @@
 ;;; accepted date format:
 ;;; dd/mm/yyy => 14/5/1987
 ;;; dd.mm.yyy => 14.5.1987
-;;; dd\mm\yyy => 14\5\1987
 ;;; dd-mm-yyy => 14-5-1987
 ;;; dd,mm,yyy => 14,5,1987
 
@@ -18,6 +17,7 @@
 (define target_day 0);;; target day
 (define operator "+");;; operator ( +/add, -/sub )
 (define operand_value 0);;; operand value (days)
+(define separator_char ",")
 
 ;;; handle date input
 (define date_switch_handler
@@ -41,19 +41,19 @@
 							operator
 							operand_value)
 					(display source_day)
-					(display "\\")
+					(display separator_char)
 					(display source_month)
-					(display "\\")
+					(display separator_char)
 					(display source_year)
-					(display " ")
+					(display separator_char)
 					(display operator)
-					(display " ")
+					(display separator_char)
 					(display operand_value)
 					(display " => ")
 					(display target_day)
-					(display "\\")
+					(display separator_char)
 					(display target_month)
-					(display "\\")
+					(display separator_char)
 					(display target_year)
 					(newline))))))
        (else (set! result #f)))
@@ -71,26 +71,32 @@
 	  (date_section 0))
       (for-each
        (lambda (char)
-	 (if (or (eq? char #\,)
-		 (eq? char #\\)
-		 (eq? char #\/)
-		 (eq? char #\-)
-		 (eq? char #\.))
-	     (set! date_section (+ date_section 1))
-	     (begin
-	       (if (and (>= (char->integer char) 48)
-			(<= (char->integer char) 57))
-		   (begin
-		     (cond
-		      ((= date_section 0) ; day section
-		       (append-to-list! day_str char))
-		      ((= date_section 1) ; month section
-		       (append-to-list! month_str char))
-		      ((= date_section 2) ; year section
-		       (append-to-list! year_str char))
-		      (else (set! result #f)))) ;;; more than 3 parts
-		   (set! result #f))))) ;;; if char is not a number
+	 (cond ((or (eq? char #\,)
+		    (eq? char #\\) ;;; this one has issue
+		    (eq? char #\/)
+		    (eq? char #\-)
+		    (eq? char #\.))
+		(set! date_section (+ date_section 1)))
+	       ((and (>= (char->integer char) 48)
+		     (<= (char->integer char) 57))
+		(begin
+		  (cond
+		   ((= date_section 0) ; day section
+		    (append-to-list! day_str char))
+		   ((= date_section 1) ; month section
+		    (append-to-list! month_str char))
+		   ((= date_section 2) ; year section
+		    (append-to-list! year_str char))
+		   (else (set! result #f))))) ;;; more than 3 parts
+	       (else (set! result #f))))
        date_char_list)
+      (if (or (equal? day_str '(null))
+	      (equal? month_str '(null))
+	      (equal? year_str '(null)))
+	  (begin
+	    (display "entered date format is incorrect, please refer to help!")
+	    (newline)
+	    (set! result #f)))
       (if (eq? result #t)
 	  (let ((day_num (string->number (list->string day_str)))
 		(month_num (string->number (list->string month_str)))
@@ -214,9 +220,9 @@
     (let ((today (current-date)))
 	  (display "today is: ")
 	  (display (date-day today))
-	  (display "\\")
+	  (display separator_char)
 	  (display (date-month today))
-	  (display "\\")
+	  (display separator_char)
 	  (display (date-year today))
 	  (newline))))
 
