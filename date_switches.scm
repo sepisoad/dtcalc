@@ -45,9 +45,9 @@
 					(display source_month)
 					(display separator_char)
 					(display source_year)
-					(display separator_char)
+					(display " ")
 					(display operator)
-					(display separator_char)
+					(display " ")
 					(display operand_value)
 					(display " => ")
 					(display target_day)
@@ -253,29 +253,43 @@
 (define calculate_date
   (lambda (year month day operation operand)
     (let ((month_len 1))
-      (if (eq? operand 0)
+      (if (eq? operand 0)	  
 	  (begin
 	    (set! target_year year)
 	    (set! target_month month)
 	    (set! target_day day))
 	  (begin
-	    (set! month_len (days_in_month year month))
-	    (if (<= operand (- month_len day))
-		(begin
-		  (set! day (+ day operand))
-		  (calculate_date year month day operation 0))
-		(begin
-		  (set! operand (- operand (- month_len day)))
-		  (if (or (equal? operation "add")
-			  (equal? operation "+"))
-		      (begin
-			(set! operand (- operand 1))
-			(set! day 1)
-			(if (eq? month 12)
-			    (begin
-			      (set! month 1)
-			      (set! year (+ year 1)))
-			    (set! month (+ month 1))))
-	        ;;; else => "sub" FIX ME
-		      )
-		  (calculate_date year month day operation operand))))))))
+	    (set! month_len (days_in_month year month)) ;;; set month length
+	    (cond 
+	     ((or (equal? operation "add") (equal? operation "+"))
+	      (begin
+		(if (<= operand (- month_len day))
+		    (begin
+		      (set! day (+ day operand))
+		      (calculate_date year month day operation 0))
+		    (begin
+		      (set! operand (- operand (- month_len day)))
+		      (set! operand (- operand 1))
+		      (set! day 1)
+		      (if (eq? month 12)
+			  (begin
+			    (set! month 1)
+			    (set! year (+ year 1)))
+			  (set! month (+ month 1)))
+		      (calculate_date year month day operation operand)))))
+	     ((or (equal? operation "sub") (equal? operation "-"))
+	      (begin
+		(if (and (< operand day))
+		    (begin
+		      (set! day (- day operand))
+		      (calculate_date year month day operation 0))
+		    (begin
+		      (set! operand (- operand day))
+		      (set! operand (- operand 1))
+		      (set! day 1)
+		      (if (eq? month 1)
+			  (begin
+			    (set! month 12)
+			    (set! year (- year 1)))
+			  (set! month (- month 1)))
+		      (calculate_date year month day operation operand)))))))))))
