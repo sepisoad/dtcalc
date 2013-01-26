@@ -3,7 +3,30 @@
 ;;; print application help
 (define help_switch_handler
   (lambda ()
-    (display "help me")
+    (display "Usage: dtcalc [SWITCH] [[OPTION]...]")
+    (newline)
+    (display "Switch  Long Version                Description")
+    (newline)
+    (display " -h      --help                      displays all the switches")
+    (newline)
+    (display " -d      --date                      date specific switch")
+    (newline)
+    (display " -t      --time                      time specific switch")
+    (newline)
+    (display " -i      --info                      displays application's information")
+    (newline)
+    (display " -v      --version                   displays application's version")
+    (newline)
+    (newline)
+    (display "how to calculate date:")
+    (newline)
+    (display "dtcalc -d dd.mm.yyyy +/add num")
+    (newline)
+    (display "using -d/--date without any options will show current date")
+    (newline)
+    (display "dtcalc -d 14.5.1987 + 10 => 24.5.1987")
+    (newline)
+    (display "dtcalc -d 14.5.1987 - 1120 => 19.4.1984")
     (newline)
     (exit)))
 
@@ -39,6 +62,12 @@
     
     (display "version: ")
     (display app_version)
+    (newline)
+    (exit)))
+
+(define fail_to_parse_handler
+  (lambda ()
+    (display "please use -h or --help to learn how to use 'dtcalc'")
     (newline)
     (exit)))
 

@@ -5,7 +5,7 @@
 
 (use srfi-37) 			; command-line-arguments
 
-(define app_version "0.0.1")
+(define app_version "0.1.1")
 (define app_license "GPL3")
 (define app_copyright "Sepehr Aryani - 2013")
 (define app_author_name "Sepehr Aryani")
@@ -28,11 +28,13 @@
  (lambda(item)
    (cond
     ((or (equal? item "--date")  (equal? item "-d"))
-     ((if (eq? (date_switch_handler (cdr cmd_args)) #t)
+     (if (eq? (date_switch_handler (cdr cmd_args)) #t)
 	  (exit)
-	  (help_switch_handler)))) 
+	  (fail_to_parse_handler)))
     ((or (equal? item "--time")  (equal? item "-t"))
-     (time_switch_handler))
+     (if (eq? (time_switch_handler (cdr cmd_args)) #t)
+	 (exit)
+	 (fail_to_parse_handler)))
     ((or (equal? item "--help")  (equal? item "-h"))
      (help_switch_handler))
     ((or (equal? item "--version") (equal? item "-v"))

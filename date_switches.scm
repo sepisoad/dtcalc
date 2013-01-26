@@ -94,7 +94,7 @@
 	      (equal? month_str '(null))
 	      (equal? year_str '(null)))
 	  (begin
-	    (display "entered date format is incorrect, please refer to help!")
+	    (display "entered date format is incorrect")
 	    (newline)
 	    (set! result #f)))
       (if (eq? result #t)
