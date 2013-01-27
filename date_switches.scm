@@ -1,6 +1,6 @@
 (declare (unit date_switches))
 
-(require-extension srfi-19-date) ;;; scheme date library
+(require-extension srfi-19-date) ;;; scheme date/time library
 
 ;;; accepted date format:
 ;;; dd/mm/yyy => 14/5/1987
@@ -17,7 +17,7 @@
 (define target_day 0);;; target day
 (define operator "+");;; operator ( +/add, -/sub )
 (define operand_value 0);;; operand value (days)
-(define separator_char ",")
+(define date_separator_char "/")
 
 ;;; handle date input
 (define date_switch_handler
@@ -40,10 +40,12 @@
 							source_day
 							operator
 							operand_value)
+					(display "date format is : <dd.mm.yyyy>")
+					(newline)
 					(display source_day)
-					(display separator_char)
+					(display date_separator_char)
 					(display source_month)
-					(display separator_char)
+					(display date_separator_char)
 					(display source_year)
 					(display " ")
 					(display operator)
@@ -51,9 +53,9 @@
 					(display operand_value)
 					(display " => ")
 					(display target_day)
-					(display separator_char)
+					(display date_separator_char)
 					(display target_month)
-					(display separator_char)
+					(display date_separator_char)
 					(display target_year)
 					(newline))))))
        (else (set! result #f)))
@@ -220,9 +222,9 @@
     (let ((today (current-date)))
 	  (display "today is: ")
 	  (display (date-day today))
-	  (display separator_char)
+	  (display date_separator_char)
 	  (display (date-month today))
-	  (display separator_char)
+	  (display date_separator_char)
 	  (display (date-year today))
 	  (newline))))
 

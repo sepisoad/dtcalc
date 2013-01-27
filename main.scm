@@ -5,7 +5,7 @@
 
 (use srfi-37) 			; command-line-arguments
 
-(define app_version "0.1.1")
+(define app_version "1.0.0")
 (define app_license "GPL3")
 (define app_copyright "Sepehr Aryani - 2013")
 (define app_author_name "Sepehr Aryani")
