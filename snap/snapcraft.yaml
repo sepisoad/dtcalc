@@ -1,0 +1,17 @@
+
+name: dtcalc 
+version: '0.1'
+summary: date and time calculator
+description: |
+  this is a small cli program that can do calculation on time and date
+grade: devel 
+confinement: devmode 
+
+apps:
+  dtcalc:
+    command: dtcalc
+
+parts:
+  my-part:
+    # See 'snapcraft plugins'
+    plugin: nil
